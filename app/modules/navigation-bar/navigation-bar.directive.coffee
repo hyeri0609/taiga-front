@@ -17,7 +17,7 @@
 # File: navigation-bar.directive.coffee
 ###
 
-NavigationBarDirective = (currentUserService, navigationBarService, locationService, navUrlsService, config) ->
+NavigationBarDirective = (currentUserService, navigationBarService, locationService, navUrlsService, config, rootScope) ->
     link = (scope, el, attrs, ctrl) ->
         scope.vm = {}
 
@@ -32,6 +32,8 @@ NavigationBarDirective = (currentUserService, navigationBarService, locationServ
             nextUrl = encodeURIComponent(locationService.url())
             locationService.url(navUrlsService.resolve("login"))
             locationService.search({next: nextUrl})
+
+        scope.vm.userSettingsPlugins = _.filter(rootScope.userSettingsPlugins, {headerMenu: true})
 
         scope.$on "$routeChangeSuccess", () ->
             if locationService.path() == "/"
@@ -53,6 +55,7 @@ NavigationBarDirective.$inject = [
     "$tgLocation",
     "$tgNavUrls",
     "$tgConfig"
+    "$rootScope"
 ]
 
 angular.module("taigaNavigationBar").directive("tgNavigationBar", NavigationBarDirective)
